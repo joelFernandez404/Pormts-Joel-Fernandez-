@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prompts Startups — Joel Fernández</title>
+<style>
+  :root {
+    --bg: #060912;
+    --bg-soft: #0b1220;
+    --panel: #0e1626;
+    --panel-border: #1c2940;
+    --blue-700: #0f3d8c;
+    --blue-500: #1f6fe5;
+    --blue-300: #5fa3ff;
+    --ice: #cfe3ff;
+    --text: #eaf0fb;
+    --text-dim: #93a4c4;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    background:
+      radial-gradient(circle at 15% -10%, rgba(31,111,229,0.22), transparent 45%),
+      radial-gradient(circle at 88% 8%, rgba(95,163,255,0.10), transparent 40%),
+      linear-gradient(180deg, var(--bg) 0%, var(--bg-soft) 100%);
+    min-height: 100vh;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 22px; }
+
+  /* HERO */
+  header.hero { padding: 64px 0 52px; text-align: center; }
+  .author-avatar {
+    width: 80px; height: 80px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue-700), var(--blue-500));
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 24px;
+    font-size: 26px; font-weight: 800; color: #fff;
+    letter-spacing: -1px;
+    border: 2px solid rgba(95,163,255,0.3);
+  }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; letter-spacing: .13em; text-transform: uppercase;
+    color: var(--blue-300);
+    background: rgba(31,111,229,0.08);
+    border: 1px solid rgba(95,163,255,0.22);
+    padding: 6px 14px; border-radius: 999px; margin-bottom: 20px;
+  }
+  .eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--blue-300); }
+  h1.brand {
+    font-size: clamp(2.2rem, 5.5vw, 3.8rem);
+    font-weight: 800; letter-spacing: -0.02em; margin: 0 0 12px; line-height: 1.05;
+  }
+  h1.brand .accent {
+    background: linear-gradient(95deg, var(--blue-300), var(--blue-500) 60%, #8ec0ff);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .subtitle {
+    color: var(--text-dim); font-size: 1rem; max-width: 520px;
+    margin: 0 auto; line-height: 1.6;
+  }
+  .pill-row { display: flex; justify-content: center; gap: 8px; margin-top: 24px; flex-wrap: wrap; }
+  .pill {
+    font-size: 12px; color: var(--ice);
+    background: var(--panel); border: 1px solid var(--panel-border);
+    padding: 6px 13px; border-radius: 999px;
+  }
+
+  /* SECTION */
+  .section-head {
+    margin: 60px 0 28px;
+    border-bottom: 1px solid var(--panel-border);
+    padding-bottom: 16px;
+    display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  }
+  .section-head h2 { font-size: 1.35rem; letter-spacing: -0.01em; }
+  .section-head p { color: var(--text-dim); font-size: .88rem; margin: 0; }
+  .gap-label { color: #ffb454; font-weight: 600; }
+
+  /* GRID */
+  .grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+  @media(min-width: 720px) {
+    .grid { grid-template-columns: 1fr 1fr; }
+    .grid .card:nth-child(1) { grid-column: 1 / -1; }
+  }
+
+  .card {
+    background: linear-gradient(165deg, var(--panel) 0%, #0a1120 100%);
+    border: 1px solid var(--panel-border);
+    border-radius: var(--radius);
+    padding: 26px 26px 22px;
+    position: relative; overflow: hidden;
+    transition: border-color .2s ease;
+  }
+  .card::before {
+    content: ""; position: absolute; top: -1px; left: -1px;
+    width: 100%; height: 3px;
+    background: linear-gradient(90deg, var(--blue-500), transparent 70%);
+    opacity: .8;
+  }
+  .card:hover { border-color: rgba(95,163,255,0.32); }
+
+  .card-tag {
+    font-size: 10.5px; letter-spacing: .11em; text-transform: uppercase;
+    color: var(--blue-300); font-weight: 600; margin-bottom: 4px;
+  }
+  .card-title { font-size: 1.08rem; font-weight: 700; margin-bottom: 8px; }
+  .card-desc { color: var(--text-dim); font-size: .86rem; margin-bottom: 14px; line-height: 1.5; }
+
+  .prompt-box {
+    background: #050a14;
+    border: 1px solid #131d33;
+    border-radius: 10px;
+    padding: 14px 15px;
+    font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+    font-size: 12.5px;
+    line-height: 1.65;
+    color: #cdddff;
+    white-space: pre-wrap;
+    max-height: 220px;
+    overflow-y: auto;
+  }
+  .prompt-box::-webkit-scrollbar { width: 6px; }
+  .prompt-box::-webkit-scrollbar-thumb { background: #1c2940; border-radius: 10px; }
+  .gap { color: #ffb454; font-weight: 600; }
+
+  .copy-btn {
+    margin-top: 14px; width: 100%;
+    background: linear-gradient(95deg, var(--blue-700), var(--blue-500));
+    color: #fff; border: none; padding: 11px 16px; border-radius: 8px;
+    font-size: .88rem; font-weight: 600; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 7px;
+    transition: transform .15s ease, box-shadow .2s ease;
+    box-shadow: 0 6px 18px -8px rgba(31,111,229,0.6);
+  }
+  .copy-btn:hover { transform: translateY(-1px); box-shadow: 0 10px 22px -6px rgba(31,111,229,0.7); }
+  .copy-btn:active { transform: translateY(0); }
+  .copy-btn.copied { background: linear-gradient(95deg, #16a34a, #22c55e); }
+  .copy-btn svg { width: 15px; height: 15px; }
+
+  footer {
+    margin-top: 80px; padding: 32px 0 40px;
+    border-top: 1px solid var(--panel-border);
+    text-align: center; color: var(--text-dim); font-size: .83rem;
+  }
+  footer b { color: var(--blue-300); font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div class="author-avatar">JF</div>
+    <div class="eyebrow"><span class="dot"></span> GDG Quito · IA para Startups</div>
+    <h1 class="brand">Prompts para <span class="accent">Startups</span></h1>
+    <p class="subtitle">
+      10 prompts esenciales para validar ideas, evaluar viabilidad y construir modelos de negocio — con foco en Latinoamérica y Ecuador.
+    </p>
+    <div class="pill-row">
+      <span class="pill">ChatGPT</span>
+      <span class="pill">Claude</span>
+      <span class="pill">Gemini</span>
+      <span class="pill">Validación</span>
+      <span class="pill">Ecuador · LATAM</span>
+    </div>
+  </header>
+
+  <div class="section-head">
+    <h2>Biblioteca de prompts</h2>
+    <p>Reemplaza el texto en <span class="gap-label">[corchetes]</span> con tu caso</p>
+  </div>
+
+  <div class="grid" id="cardsGrid"></div>
+
+  <footer>
+    <span>Prompts by <b>Joel Fernández</b> &nbsp;·&nbsp; powered by <b>Joel Fernández</b></span>
+  </footer>
+</div>
+
+<script>
+const prompts = [
+  {
+    tag: "Validación de idea",
+    title: "Evaluador Rápido de Ideas de Startup",
+    desc: "Analiza si tu idea tiene potencial real antes de invertir tiempo y dinero.",
+    text: `Actúa como mentor de startups con experiencia en el ecosistema emprendedor de Latinoamérica y Ecuador.
+
+Quiero validar la siguiente idea de startup: [DESCRIBE TU IDEA EN 2-3 ORACIONES: ej. "una app que conecta agricultores del campo con compradores directos en Quito"].
+
+Analiza lo siguiente paso a paso:
+
+1. PROBLEMA REAL
+   ¿El problema que resuelvo existe de verdad en Ecuador / LATAM? ¿Es urgente o solo conveniente? ¿Cuántas personas lo sufren?
+
+2. SOLUCIÓN Y DIFERENCIACIÓN
+   ¿Mi solución es 10x mejor que lo que ya existe? ¿Qué la hace única para el contexto latinoamericano?
+
+3. MERCADO OBJETIVO
+   Define el cliente ideal (edad, ubicación, poder adquisitivo, comportamiento digital) en Ecuador o LATAM.
+
+4. RED FLAGS
+   Lista 3 señales de alerta que podrían indicar que esta idea no funcionará en este mercado específico.
+
+5. VEREDICTO
+   Dame un puntaje del 1 al 10 sobre el potencial de la idea, con una justificación de 3 líneas.
+
+Sé directo y honesto. No quiero que me halagues — quiero saber la verdad.`
+  },
+  {
+    tag: "Viabilidad",
+    title: "Análisis de Viabilidad de Startup",
+    desc: "Determina si tu startup puede sobrevivir y crecer en el mercado ecuatoriano o latinoamericano.",
+    text: `Actúa como analista de riesgo e inversión con experiencia evaluando startups early-stage en Ecuador y Latinoamérica.
+
+Mi startup es: [NOMBRE O DESCRIPCIÓN BREVE DE TU STARTUP]
+Sector: [EJ. FINTECH / AGTECH / EDTECH / SALUD / LOGÍSTICA]
+País objetivo: [EJ. ECUADOR / COLOMBIA / TODA LATAM]
+Etapa actual: [EJ. IDEA / MVP / PRIMEROS USUARIOS / CON INGRESOS]
+
+Evalúa la viabilidad en estas 5 dimensiones:
+
+1. VIABILIDAD DE MERCADO
+   ¿Existe demanda real y suficiente en ese país? ¿Hay poder adquisitivo para pagar por esto?
+
+2. VIABILIDAD TÉCNICA
+   ¿Es posible construir esto con equipos y recursos disponibles en LATAM?
+
+3. VIABILIDAD FINANCIERA
+   ¿Cuánto capital se necesitaría para llegar a punto de equilibrio? ¿Qué modelo de ingresos encaja mejor?
+
+4. VIABILIDAD REGULATORIA
+   ¿Existen barreras legales, tributarias o regulatorias en Ecuador/LATAM que compliquen este negocio?
+
+5. VIABILIDAD COMPETITIVA
+   ¿Quiénes son los competidores directos e indirectos en LATAM? ¿Por qué yo ganaría?
+
+Concluye con: ¿Deberías seguir adelante, pivotar o abandonar? Dame una recomendación clara.`
+  },
+  {
+    tag: "Modelo de negocio",
+    title: "Diseñador de Modelo de Negocio (Canvas)",
+    desc: "Construye el Business Model Canvas completo adaptado al contexto latinoamericano.",
+    text: `Actúa como consultor de modelos de negocio con especialización en startups de Latinoamérica.
+
+Mi startup hace lo siguiente: [DESCRIBE QUÉ HACE TU STARTUP Y A QUIÉN SIRVE]
+
+Completa el Business Model Canvas adaptado a Ecuador / LATAM:
+
+1. SEGMENTOS DE CLIENTES
+   ¿Quiénes son exactamente? Define 2 segmentos con nombre, perfil y contexto local.
+
+2. PROPUESTA DE VALOR
+   ¿Qué problema resuelves y por qué tu solución es mejor que las alternativas que ya existen en LATAM?
+
+3. CANALES
+   ¿Cómo llegas a tus clientes? (WhatsApp, redes sociales, distribuidores locales, boca a boca, etc.)
+
+4. RELACIÓN CON CLIENTES
+   ¿Cómo adquieres, retienes y haces crecer tu base de usuarios en un mercado con poca confianza digital?
+
+5. FUENTES DE INGRESOS
+   ¿Cómo ganas dinero? Propón 2 modelos de monetización viables para el mercado local.
+
+6. RECURSOS CLAVE
+   ¿Qué necesitas sí o sí para operar? (tecnología, alianzas, talento, permisos)
+
+7. ACTIVIDADES CLAVE
+   ¿Qué debes hacer excepcionalmente bien para que el negocio funcione?
+
+8. SOCIOS CLAVE
+   ¿Con quién deberías aliarte en Ecuador / LATAM para crecer más rápido?
+
+9. ESTRUCTURA DE COSTOS
+   ¿Cuáles son tus 3 costos más grandes? ¿Cómo los minimizas al inicio?
+
+Entrega el canvas completo en formato de tabla.`
+  },
+  {
+    tag: "Cliente ideal",
+    title: "Constructor de Buyer Persona para LATAM",
+    desc: "Define a tu cliente ideal con contexto real latinoamericano y ecuatoriano.",
+    text: `Actúa como investigador de mercado especializado en comportamiento del consumidor en Latinoamérica.
+
+Mi startup ofrece: [PRODUCTO O SERVICIO]
+Mercado objetivo: [PAÍS: EJ. ECUADOR / COLOMBIA / MÉXICO]
+
+Crea el perfil completo de mi cliente ideal (Buyer Persona):
+
+1. DATOS DEMOGRÁFICOS
+   Nombre ficticio, edad, ciudad, nivel educativo, ingresos mensuales aproximados en dólares, situación familiar.
+
+2. CONTEXTO DIGITAL
+   ¿Qué redes sociales usa? ¿Tiene smartphone de gama alta o media? ¿Paga con tarjeta o efectivo? ¿Confía en compras online?
+
+3. DOLOR Y FRUSTRACIONES
+   ¿Qué problema tiene hoy que mi startup resuelve? ¿Qué soluciones ha probado y por qué no le funcionaron?
+
+4. MOTIVACIONES Y METAS
+   ¿Qué quiere lograr? ¿Qué lo impulsa a buscar una solución nueva?
+
+5. OBJECIONES PRINCIPALES
+   ¿Por qué NO me compraría? Lista las 3 principales resistencias y cómo responderlas.
+
+6. FRASE QUE DIRÍA
+   Escribe una cita textual que este cliente diría sobre su problema, en lenguaje natural latinoamericano.
+
+Hazlo específico para la realidad económica y cultural de [PAÍS].`
+  },
+  {
+    tag: "Competencia",
+    title: "Análisis Competitivo para LATAM",
+    desc: "Mapea a tus competidores y encuentra tu ventaja diferencial en el mercado local.",
+    text: `Actúa como analista de inteligencia competitiva con foco en el ecosistema startup de Latinoamérica.
+
+Mi startup: [NOMBRE O DESCRIPCIÓN]
+Categoría: [EJ. MARKETPLACE / SAAS / APP MÓVIL / SERVICIO]
+País: [EJ. ECUADOR / PERÚ / COLOMBIA]
+
+Realiza un análisis competitivo completo:
+
+1. COMPETIDORES DIRECTOS EN LATAM
+   Lista 3-4 startups o empresas que hacen algo similar en la región. Para cada una indica: nombre, país de origen, modelo de negocio y punto fuerte.
+
+2. COMPETIDORES INDIRECTOS
+   ¿Cómo resuelven hoy el mismo problema tus clientes sin usar ninguna startup? (ej. Excel, WhatsApp, intermediarios, soluciones informales)
+
+3. MATRIZ DE COMPARACIÓN
+   Crea una tabla comparando mi startup vs. los 3 principales competidores en: precio, facilidad de uso, cobertura en LATAM, adaptación local y soporte.
+
+4. VENTAJA DIFERENCIAL
+   ¿Qué podría hacer mi startup que los competidores no pueden o no quieren hacer en este mercado?
+
+5. RIESGOS COMPETITIVOS
+   ¿Qué pasaría si un grande como [EJ. MERCADOLIBRE / RAPPI / IFOOD] decide entrar a mi nicho?
+
+Sé específico con el contexto local. Evita mencionar solo competidores de EE.UU. o Europa.`
+  },
+  {
+    tag: "Monetización",
+    title: "Estratega de Pricing para el Mercado LATAM",
+    desc: "Define cuánto cobrar y cómo, adaptado al poder adquisitivo y hábitos de pago locales.",
+    text: `Actúa como especialista en pricing y monetización de productos digitales en mercados emergentes de Latinoamérica.
+
+Mi producto/servicio es: [DESCRIBE QUÉ OFRECES]
+Mi cliente objetivo: [PERFIL BÁSICO: EJ. "PYMES EN ECUADOR", "JÓVENES 18-30 EN QUITO"]
+Rango de precio actual o tentativo: [EJ. "$10/mes" o "aún no sé"]
+
+Diseña mi estrategia de pricing:
+
+1. MODELO DE MONETIZACIÓN RECOMENDADO
+   ¿Freemium, suscripción, pago por uso, marketplace, comisión por transacción u otro? Justifica por qué ese modelo encaja en LATAM.
+
+2. ESTRUCTURA DE PRECIOS
+   Propón 2-3 planes con nombres, precios en dólares y qué incluye cada uno, adaptados al poder adquisitivo del mercado local.
+
+3. PRECIO PSICOLÓGICO
+   ¿Qué precio genera más conversión en Ecuador/LATAM? ¿Cómo lo presento para que no se sienta caro?
+
+4. BARRERAS DE PAGO
+   ¿Qué métodos de pago debo aceptar? (Efectivo, transferencia bancaria, tarjeta, billeteras digitales como Deuna, PayPhone, etc.)
+
+5. ESTRATEGIA DE LANZAMIENTO
+   ¿Debería empezar gratis para ganar usuarios? ¿Cuándo y cómo paso a cobrar sin perder a los primeros clientes?`
+  },
+  {
+    tag: "Tracción",
+    title: "Plan de Primeros 100 Clientes en LATAM",
+    desc: "Estrategia concreta para conseguir tus primeros usuarios en Ecuador o Latinoamérica.",
+    text: `Actúa como growth hacker con experiencia lanzando productos en mercados emergentes de Latinoamérica, donde los presupuestos son bajos pero la creatividad es alta.
+
+Mi startup: [DESCRIBE QUÉ HACE Y A QUIÉN SIRVE]
+Presupuesto de marketing inicial: [EJ. "$0", "$200/mes", "$500/mes"]
+Ciudad o país objetivo: [EJ. QUITO / ECUADOR / COLOMBIA]
+
+Crea un plan concreto para conseguir mis primeros 100 clientes:
+
+1. CANALES DE ADQUISICIÓN GRATUITOS
+   Lista 4 formas de conseguir usuarios sin dinero que funcionen en Ecuador/LATAM (comunidades de WhatsApp, grupos de Facebook, ferias locales, universidades, etc.)
+
+2. CANALES DE PAGO (si aplica)
+   ¿Cómo invertiría un presupuesto mínimo en Meta Ads o Google Ads para LATAM? ¿Qué segmentaciones usaría?
+
+3. ALIANZAS ESTRATÉGICAS LOCALES
+   ¿Con qué gremios, cámaras de comercio, asociaciones o influencers locales podría asociarme para llegar a mi audiencia más rápido?
+
+4. ESTRATEGIA DE VENTAS DIRECTAS
+   ¿Cómo haría ventas 1 a 1 en los primeros meses? ¿Por dónde empiezo (LinkedIn, WhatsApp, eventos, en persona)?
+
+5. CRONOGRAMA DE 30 DÍAS
+   Dame un plan semana a semana para llegar a los primeros 100 usuarios en 30 días.`
+  },
+  {
+    tag: "Pitch",
+    title: "Creador de Pitch para Inversores LATAM",
+    desc: "Estructura tu pitch de 3 minutos para convencer a un inversor o fondo de la región.",
+    text: `Actúa como coach de pitching con experiencia preparando startups para Demo Days y fondos de inversión en Latinoamérica (NXTP, Platanus, Dila Capital, 500 LATAM, etc.).
+
+Mi startup se llama: [NOMBRE]
+Solución: [QUÉ HACE EN UNA ORACIÓN]
+Tracción actual: [EJ. "150 usuarios activos", "3 clientes pagando $200/mes", "MVP lanzado"]
+Dinero que busco levantar: [EJ. "$50,000", "$200,000"]
+
+Crea el guión completo de un pitch de 3 minutos estructurado así:
+
+1. GANCHO (15 segundos)
+   Una frase poderosa que describe el problema de forma visual y emocional.
+
+2. EL PROBLEMA (30 segundos)
+   ¿Cuán grande y real es el problema en LATAM? ¿Algún dato o estadística regional?
+
+3. LA SOLUCIÓN (30 segundos)
+   Cómo funciona mi producto en términos simples. Sin tecnicismos.
+
+4. MERCADO (20 segundos)
+   TAM, SAM, SOM estimados para Ecuador/LATAM. Exprésalos en dólares.
+
+5. MODELO DE NEGOCIO (20 segundos)
+   Cómo gano dinero. Simple y directo.
+
+6. TRACCIÓN (20 segundos)
+   Los números más impresionantes que tengo hasta ahora.
+
+7. EQUIPO (15 segundos)
+   ¿Por qué nosotros? ¿Qué nos hace los mejores para resolver esto?
+
+8. ASK (10 segundos)
+   Cuánto pido, para qué lo usaré y qué hitos lograré con ese dinero.
+
+Que suene natural, no leído. Que sea memorable.`
+  },
+  {
+    tag: "Pivote",
+    title: "Decisión de Pivote o Perseverar",
+    desc: "Analiza señales de tu startup para saber si debes pivotar o seguir en el mismo rumbo.",
+    text: `Actúa como advisor de startups con experiencia ayudando a founders a tomar decisiones difíciles en Latinoamérica.
+
+Situación actual de mi startup:
+- Qué hacemos: [DESCRIPCIÓN]
+- Tiempo en el mercado: [EJ. "6 meses"]
+- Usuarios o clientes actuales: [EJ. "50 usuarios, 2 pagando"]
+- Principal problema que enfrentamos: [EJ. "nadie quiere pagar", "el crecimiento se estancó", "los usuarios no regresan"]
+- Recursos que nos quedan: [EJ. "3 meses de runway", "equipo de 2 personas"]
+
+Analiza mi situación y responde:
+
+1. SEÑALES DE ALERTA
+   ¿Qué indicadores sugieren que algo no está funcionando y podría necesitar un cambio?
+
+2. SEÑALES DE ESPERANZA
+   ¿Qué indicadores sugieren que hay algo valioso en lo que ya construí?
+
+3. OPCIONES DE PIVOTE
+   Propón 2 posibles pivotes concretos (cambio de segmento, modelo, canal o problema) que aprovechen lo que ya tengo.
+
+4. CÓMO VALIDAR EL PIVOTE
+   ¿Cómo probaría si el nuevo rumbo funciona en menos de 30 días y con menos de $[PRESUPUESTO DISPONIBLE]?
+
+5. RECOMENDACIÓN FINAL
+   ¿Pivotarías o perseverarías? Dame una recomendación directa con tu razonamiento.`
+  },
+  {
+    tag: "Ecosistema LATAM",
+    title: "Mapa del Ecosistema Startup en Ecuador / LATAM",
+    desc: "Conoce los actores clave: fondos, aceleradoras, comunidades y recursos disponibles en la región.",
+    text: `Actúa como experto en el ecosistema emprendedor de Latinoamérica con conocimiento profundo de Ecuador, Colombia, Chile, México y Argentina.
+
+Mi startup está en: [PAÍS: EJ. ECUADOR]
+Etapa: [EJ. IDEA / PRE-SEED / SEED]
+Sector: [EJ. FINTECH / AGTECH / EDTECH / HEALTHTECH / PROPTECH]
+
+Dame un mapa completo del ecosistema para mi contexto:
+
+1. FONDOS DE INVERSIÓN ACTIVOS EN LATAM
+   Lista 5-7 fondos que inviertan en mi etapa y sector, con monto típico de inversión y cómo aplicar.
+
+2. ACELERADORAS Y PROGRAMAS
+   Menciona las 5 aceleradoras más relevantes para startups latinoamericanas (Y Combinator LATAM track, Platanus, StartupChile, UTEC Ventures, etc.) y sus fechas de aplicación aproximadas.
+
+3. ECOSISTEMA LOCAL EN [PAÍS]
+   ¿Quiénes son los actores clave en mi país? (Cámaras, hubs, ministerios, ángeles inversores conocidos, comunidades de founders)
+
+4. RECURSOS GRATUITOS
+   ¿Qué programas de apoyo gratuitos existen para startups en etapa temprana en LATAM? (Créditos cloud, programas de gobierno, grants internacionales)
+
+5. PRÓXIMOS PASOS
+   Dame un plan de 60 días para conectarme con el ecosistema y posicionar mi startup en el radar correcto.`
+  }
+];
+
+const grid = document.getElementById('cardsGrid');
+
+prompts.forEach((p, i) => {
+  const card = document.createElement('div');
+  card.className = 'card';
+
+  const escaped = p.text
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\[(.*?)\]/g, '<span class="gap">[$1]</span>');
+
+  card.innerHTML = `
+    <div class="card-tag">${p.tag}</div>
+    <h3 class="card-title">${p.title}</h3>
+    <p class="card-desc">${p.desc}</p>
+    <div class="prompt-box">${escaped}</div>
+    <button class="copy-btn" data-index="${i}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+      Copiar prompt
+    </button>
+  `;
+  grid.appendChild(card);
+});
+
+grid.addEventListener('click', (e) => {
+  const btn = e.target.closest('.copy-btn');
+  if (!btn) return;
+  const idx = btn.getAttribute('data-index');
+  navigator.clipboard.writeText(prompts[idx].text).then(() => {
+    const orig = btn.innerHTML;
+    btn.classList.add('copied');
+    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> ¡Copiado!`;
+    setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = orig; }, 1800);
+  });
+});
+</script>
+</body>
+</html>
